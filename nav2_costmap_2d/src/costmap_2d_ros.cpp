@@ -46,9 +46,7 @@
 #include "nav2_util/duration_conversions.hpp"
 #include "nav2_util/execution_timer.hpp"
 #include "tf2_geometry_msgs/tf2_geometry_msgs.h"
-#ifdef NEW_TIMER_API
 #include "tf2_ros/create_timer_ros.h"
-#endif
 
 using namespace std::chrono_literals;
 
@@ -114,12 +112,10 @@ Costmap2DROS::on_configure(const rclcpp_lifecycle::State & /*state*/)
 
   // Create the transform-related objects
   tf_buffer_ = std::make_shared<tf2_ros::Buffer>(rclcpp_node_->get_clock());
-#ifdef NEW_TIMER_API
   auto timer_interface = std::make_shared<tf2_ros::CreateTimerROS>(
     rclcpp_node_->get_node_base_interface(),
     rclcpp_node_->get_node_timers_interface());
   tf_buffer_->setCreateTimerInterface(timer_interface);
-#endif
   tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 
   // Then load and add the plug-ins to the costmap
