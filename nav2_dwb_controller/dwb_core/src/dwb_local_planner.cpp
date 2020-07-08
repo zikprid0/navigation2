@@ -264,7 +264,7 @@ DWBLocalPlanner::setPlan(const nav_2d_msgs::msg::Path2D & path)
   for (TrajectoryCritic::Ptr critic : critics_) {
     critic->reset();
   }
-
+  goal_checker_->initialize(node_);
   pub_->publishGlobalPlan(path);
   global_plan_ = path;
 }

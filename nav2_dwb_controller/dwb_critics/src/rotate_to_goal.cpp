@@ -70,6 +70,8 @@ bool RotateToGoalCritic::prepare(
 
 double RotateToGoalCritic::scoreTrajectory(const dwb_msgs::msg::Trajectory2D & traj)
 {
+  xy_goal_tolerance_ = nav_2d_utils::searchAndGetParam(nh_, "xy_goal_tolerance", 0.25);
+  xy_goal_tolerance_sq_ = xy_goal_tolerance_ * xy_goal_tolerance_;
   // If we're not sufficiently close to the goal, we don't care what the twist is
   if (!in_window_) {
     return 0.0;

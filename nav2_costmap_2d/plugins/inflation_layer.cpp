@@ -75,10 +75,15 @@ InflationLayer::InflationLayer()
 void
 InflationLayer::onInitialize()
 {
-  declareParameter("enabled", rclcpp::ParameterValue(true));
-  declareParameter("inflation_radius", rclcpp::ParameterValue(0.55));
-  declareParameter("cost_scaling_factor", rclcpp::ParameterValue(10.0));
-  declareParameter("inflate_unknown", rclcpp::ParameterValue(false));
+
+  try{
+    declareParameter("enabled", rclcpp::ParameterValue(true));
+    declareParameter("inflation_radius", rclcpp::ParameterValue(0.55));
+    declareParameter("cost_scaling_factor", rclcpp::ParameterValue(10.0));
+    declareParameter("inflate_unknown", rclcpp::ParameterValue(false));
+  } catch( rclcpp::exceptions::ParameterAlreadyDeclaredException e) {
+    
+  }
 
   node_->get_parameter(name_ + "." + "enabled", enabled_);
   node_->get_parameter(name_ + "." + "inflation_radius", inflation_radius_);
@@ -107,6 +112,7 @@ InflationLayer::updateBounds(
   double /*robot_x*/, double /*robot_y*/, double /*robot_yaw*/, double * min_x,
   double * min_y, double * max_x, double * max_y)
 {
+  // RCLCPP_WARN(rclcpp::get_logger( "nav2_costmap_2d"), "inflation_radius_ %f", inflation_radius_);
   if (need_reinflation_) {
     last_min_x_ = *min_x;
     last_min_y_ = *min_y;

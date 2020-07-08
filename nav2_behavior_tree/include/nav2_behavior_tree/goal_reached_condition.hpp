@@ -61,6 +61,7 @@ public:
     tf_ = blackboard()->template get<std::shared_ptr<tf2_ros::Buffer>>("tf_buffer");
 
     initialized_ = true;
+    tf_->setUsingDedicatedThread(true);
   }
 
   bool

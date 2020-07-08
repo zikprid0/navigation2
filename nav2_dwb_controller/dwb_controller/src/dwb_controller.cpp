@@ -77,7 +77,7 @@ DwbController::on_configure(const rclcpp_lifecycle::State & state)
   RCLCPP_INFO(get_logger(), "Controller frequency set to %.4fHz", controller_frequency_);
 
   odom_sub_ = std::make_shared<nav_2d_utils::OdomSubscriber>(*this);
-  vel_publisher_ = create_publisher<geometry_msgs::msg::Twist>("/cmd_vel", 1);
+  vel_publisher_ = create_publisher<geometry_msgs::msg::Twist>("cmd_vel", 1);
 
   // Create the action server that we implement with our followPath method
   action_server_ = std::make_unique<ActionServer>(rclcpp_node_, "FollowPath",
@@ -230,7 +230,6 @@ void DwbController::computeAndPublishVelocity()
   progress_checker_->check(pose2d);
 
   auto cmd_vel_2d = planner_->computeVelocityCommands(pose2d, odom_sub_->getTwist());
-
   RCLCPP_DEBUG(get_logger(), "Publishing velocity at time %.2f", now().seconds());
   publishVelocity(cmd_vel_2d);
 }
@@ -246,6 +245,17 @@ void DwbController::updateGlobalPath()
 void DwbController::publishVelocity(const nav_2d_msgs::msg::Twist2DStamped & velocity)
 {
   auto cmd_vel = nav_2d_utils::twist2Dto3D(velocity.velocity);
+  if (cmd_vel.linear.x > 3.0) {
+    cmd_vel.linear.x = 3.0;
+  } else if (cmd_vel.linear.x < -3.0) {
+    cmd_vel.linear.x = -3.0;
+  }
+  if (cmd_vel.angular.z > 5.0) {
+    cmd_vel.angular.z = 5.0;
+  } else if (cmd_vel.angular.z < -5.0) {
+    cmd_vel.angular.z = -5.0;
+  }
+
   vel_publisher_->publish(cmd_vel);
 }
 

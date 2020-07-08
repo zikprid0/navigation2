@@ -502,6 +502,14 @@ Costmap2DROS::resetLayers()
   {
     (*plugin)->reset();
   }
+  getParameters();
+  if (use_radius_) {
+    setRobotFootprint(makeFootprintFromRadius(robot_radius_));
+  } else {
+    std::vector<geometry_msgs::msg::Point> new_footprint;
+    makeFootprintFromString(footprint_, new_footprint);
+    setRobotFootprint(new_footprint);
+  }
 }
 
 bool

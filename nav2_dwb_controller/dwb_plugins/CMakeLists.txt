@@ -60,7 +60,7 @@ install(DIRECTORY include/
         DESTINATION include/
 )
 install(FILES plugins.xml
-        DESTINATION share/${PROJECT_NAME}
+        DESTINATION share
 )
 
 ament_export_include_directories(include)
